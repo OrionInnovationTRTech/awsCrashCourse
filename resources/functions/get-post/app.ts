@@ -18,11 +18,11 @@ const handler = async (event: GetPostEvent): Promise<APIGatewayProxyStructuredRe
 
   const {
     pathParameters: {
-      id
+      post_id
     }
   } = event;
   const postRepository = await container.getAsync<IPostRepository>(TYPES.PostRepository);
-  const existingPost = await postRepository.getPostById(id);
+  const existingPost = await postRepository.getPostById(post_id);
 
   if (!existingPost) {
     return responseUtils.notFound();

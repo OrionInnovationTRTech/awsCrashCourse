@@ -3,13 +3,13 @@ import * as yup from "yup";
 
 export interface GetPostEvent extends APIGatewayProxyEvent {
   pathParameters: {
-    id: string;
+    post_id: string;
   }
 }
 
 export const validationSchema = yup.object({
   pathParameters: yup.object({
-    id: yup.string()
+    post_id: yup.string()
       .required()
   }).required()
 });
