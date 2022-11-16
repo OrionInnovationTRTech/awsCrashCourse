@@ -4,7 +4,6 @@ import httpErrorHandler from "@middy/http-error-handler";
 import {
   APIGatewayProxyStructuredResultV2
 } from "aws-lambda";
-import { HttpStatusCode } from "axios";
 import container from "../../config/inversify.config";
 import { TYPES } from "../../config/types";
 import {
@@ -13,8 +12,8 @@ import {
 } from "../../dto/DeletePostEvent";
 import validator from "../../middlewares/validator";
 import IPostRepository from "../../repository/IPostRepository";
-import ResponseUtils from "../../utils/ResponseUtils";
 import RequestUtils from "../../utils/RequestUtils";
+import ResponseUtils from "../../utils/ResponseUtils";
 
 const handler = async (event: DeletePostEvent): Promise<APIGatewayProxyStructuredResultV2> => {
   const requestUtils = container.get<RequestUtils>(TYPES.RequestUtils);

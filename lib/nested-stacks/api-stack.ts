@@ -90,7 +90,7 @@ export class ApiStack extends NestedStack {
     const postIdResource = postsResource.addResource("{post_id}")
     const allPostsResource = this.restApi.root.addResource("posts");
 
-    postIdResource.addMethod(
+    postsResource.addMethod(
       HttpMethod.POST,
       new LambdaIntegration(
         props.createPostFunction,
