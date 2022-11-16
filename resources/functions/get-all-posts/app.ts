@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { APIGatewayProxyStructuredResultV2 } from "aws-lambda";
 import container from "../../config/inversify.config";
 import { TYPES } from "../../config/types";
