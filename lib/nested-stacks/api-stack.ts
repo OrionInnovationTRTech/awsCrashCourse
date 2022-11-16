@@ -1,5 +1,5 @@
 import { Duration, NestedStack } from "aws-cdk-lib";
-import { Deployment, IdentitySource, IRestApi, LambdaIntegration, LambdaIntegrationOptions, PassthroughBehavior, RequestAuthorizer, RestApi, Stage } from "aws-cdk-lib/aws-apigateway";
+import { AuthorizationType, Deployment, IdentitySource, IRestApi, LambdaIntegration, LambdaIntegrationOptions, PassthroughBehavior, RequestAuthorizer, RestApi, Stage } from "aws-cdk-lib/aws-apigateway";
 import { HttpMethod } from "aws-cdk-lib/aws-events";
 import { IRole } from "aws-cdk-lib/aws-iam";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
@@ -76,6 +76,11 @@ export class ApiStack extends NestedStack {
       proxy: true
     };
 
+    const commonAuthorizerOptions = {
+      authorizer: authorizer,
+      authorizationType: AuthorizationType.CUSTOM
+    };
+
     loginResource.addMethod(
       HttpMethod.POST,
       new LambdaIntegration(
@@ -95,7 +100,8 @@ export class ApiStack extends NestedStack {
       new LambdaIntegration(
         props.createPostFunction,
         commonLambdaIntegrationOptions
-      )
+      ),
+      commonAuthorizerOptions
     );
 
     postIdResource.addMethod(
@@ -103,7 +109,8 @@ export class ApiStack extends NestedStack {
       new LambdaIntegration(
         props.deletePostFunction,
         commonLambdaIntegrationOptions
-      )
+      ),
+      commonAuthorizerOptions
     );
 
     postIdResource.addMethod(
