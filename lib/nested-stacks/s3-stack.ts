@@ -1,11 +1,9 @@
-import { NestedStack, NestedStackProps } from "aws-cdk-lib"
+import { NestedStack } from "aws-cdk-lib";
 import { Bucket, BucketAccessControl, IBucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
+import BaseNestedStackProps from "../types/BaseNestedStackProps";
 
-interface S3StackProps extends NestedStackProps {
-  envName: string;
-  appName: string;
-}
+interface S3StackProps extends BaseNestedStackProps {}
 
 export class S3Stack extends NestedStack {
 

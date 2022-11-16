@@ -1,10 +1,9 @@
-import { NestedStack, NestedStackProps } from "aws-cdk-lib";
-import { CfnKeyPair, IInstance, Instance, InstanceClass, InstanceSize, InstanceType, ISecurityGroup, ISubnet, IVpc, MachineImage, SubnetFilter } from "aws-cdk-lib/aws-ec2";
+import { NestedStack } from "aws-cdk-lib";
+import { CfnKeyPair, IInstance, Instance, InstanceClass, InstanceSize, InstanceType, ISecurityGroup, IVpc, MachineImage } from "aws-cdk-lib/aws-ec2";
 import { Construct } from "constructs";
+import BaseNestedStackProps from "../types/BaseNestedStackProps";
 
-interface Ec2StackProps extends NestedStackProps {
-  envName: string;
-  appName: string;
+interface Ec2StackProps extends BaseNestedStackProps {
   vpc: IVpc;
   bastionHostSecurityGroup: ISecurityGroup;
 }

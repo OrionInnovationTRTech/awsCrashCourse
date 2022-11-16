@@ -1,14 +1,14 @@
-import { Duration, NestedStack, NestedStackProps } from "aws-cdk-lib";
+import { Duration, NestedStack } from "aws-cdk-lib";
 import { ISecurityGroup, IVpc } from "aws-cdk-lib/aws-ec2";
-import { AuroraCapacityUnit, AuroraPostgresEngineVersion, Credentials, DatabaseClusterEngine, ISubnetGroup, ParameterGroup, ServerlessCluster, SubnetGroup } from "aws-cdk-lib/aws-rds";
+import { AuroraCapacityUnit, AuroraPostgresEngineVersion, Credentials, DatabaseClusterEngine, ISubnetGroup, ServerlessCluster } from "aws-cdk-lib/aws-rds";
 import { Construct } from "constructs";
+import BaseNestedStackProps from "../types/BaseNestedStackProps";
 
-interface DbStackProps extends NestedStackProps {
-  envName: string;
-  appName: string;
-  vpc: IVpc,
+interface DbStackProps extends BaseNestedStackProps {
+  vpc: IVpc;
   dbSecurityGroup: ISecurityGroup;
   dbSubnetGroup: ISubnetGroup;
+  dbSecretName: string;
 }
 
 export class DbStack extends NestedStack {
@@ -32,7 +32,7 @@ export class DbStack extends NestedStack {
       credentials: Credentials.fromGeneratedSecret(
         "postgres",
         {
-          secretName: `${envName}/${appName}/db-credentials`,
+          secretName: props.dbSecretName,
         }
       ),
       securityGroups: [props.dbSecurityGroup],

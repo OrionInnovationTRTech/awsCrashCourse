@@ -5,7 +5,7 @@ import {
 import AWS from "aws-sdk";
 import moment from "moment";
 import axios from "axios";
-import { UrlShortenerServiceResponseDto } from "../../dto/UrlShortenerServiceResponseDto";
+import { UrlShortenerServiceResponse } from "../../dto/UrlShortenerServiceResponse";
 
 AWS.config.update({
   region: process.env.AWS_REGION
@@ -19,21 +19,21 @@ export const lambdaHandler = async (event: CloudFormationCustomResourceEvent) =>
     case "Create":
     case "Update": {
       const { Parameter } = await ssm.getParameter({
-        Name: process.env.PARAMETER_NAME as string,
+        Name: process.env.PARAMETER_NAME!,
         WithDecryption: true
       }).promise();
 
       const key = "keypairs/keypair.pem";
 
       await s3.putObject({
-        Bucket: process.env.BUCKET_NAME as string,
+        Bucket: process.env.BUCKET_NAME!,
         Key: key,
         ContentType: "application/x-pem-file",
         Body: Parameter?.Value
       }).promise();
 
       const url = s3.getSignedUrl("getObject", {
-        Bucket: process.env.BUCKET_NAME as string,
+        Bucket: process.env.BUCKET_NAME!,
         Key: key
       });
 
@@ -42,14 +42,14 @@ export const lambdaHandler = async (event: CloudFormationCustomResourceEvent) =>
         .toISOString();
 
       const { data } = await axios.post(
-        process.env.URL_SHORTENER_SERVICE_BASE_URL as string,
+        process.env.URL_SHORTENER_SERVICE_BASE_URL!,
         {
           url,
           validUntil: shortLinkExpirationDate
         }
       );
 
-      const { shortLink } = data as UrlShortenerServiceResponseDto;
+      const { shortLink } = data as UrlShortenerServiceResponse;
 
       return {
         Data: {

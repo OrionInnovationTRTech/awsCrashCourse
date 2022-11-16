@@ -1,12 +1,10 @@
-import { NestedStack, NestedStackProps } from "aws-cdk-lib";
-import { ISecurityGroup, ISubnet, IVpc, Peer, Port, SecurityGroup, Subnet, SubnetType, Vpc } from "aws-cdk-lib/aws-ec2";
+import { NestedStack } from "aws-cdk-lib";
+import { ISecurityGroup, IVpc, Peer, Port, SecurityGroup, SubnetType, Vpc } from "aws-cdk-lib/aws-ec2";
 import { ISubnetGroup, SubnetGroup } from "aws-cdk-lib/aws-rds";
 import { Construct } from "constructs";
+import BaseNestedStackProps from "../types/BaseNestedStackProps";
 
-interface NetworkStackProps extends NestedStackProps {
-  envName: string;
-  appName: string;
-}
+interface NetworkStackProps extends BaseNestedStackProps {}
 
 export class NetworkStack extends NestedStack {
   private readonly vpc: IVpc;
