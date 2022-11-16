@@ -1,7 +1,7 @@
+import "reflect-metadata";
 import {
   AuthResponse, CustomAuthorizerEvent
 } from "aws-lambda";
-
 import container from "../../config/inversify.config";
 import { TYPES } from "../../config/types";
 import IAuthService from "../../service/IAuthService";
