@@ -16,8 +16,6 @@ import IAuthService from "../service/IAuthService";
 import JwtAuthService from "../service/JwtAuthService";
 import IUserRepository from "../repository/IUserRepository";
 import UserRepository from "../repository/UserRepository";
-import IPostRepository from "../repository/IPostRepository";
-import PostRepository from "../repository/PostRepository";
 
 const container = new Container();
 
@@ -29,6 +27,5 @@ container.bind<RequestUtils>(TYPES.RequestUtils).to(RequestUtils);
 container.bind<ResponseUtils>(TYPES.ResponseUtils).to(ResponseUtils);
 container.bind<IAuthService>(TYPES.JwtAuthService).to(JwtAuthService);
 container.bind<IUserRepository>(TYPES.UserRepository).to(UserRepository);
-container.bind<IPostRepository>(TYPES.PostRepository).to(PostRepository);
 
 export default container;

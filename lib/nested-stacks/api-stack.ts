@@ -11,10 +11,6 @@ interface ApiStackProps extends BaseNestedStackProps {
   credentials: IRole;
   authorizerFunction: IFunction;
   loginFunction: IFunction;
-  createPostFunction: IFunction;
-  deletePostFunction: IFunction;
-  getAllPostsFunction: IFunction;
-  getPostFunction: IFunction;
 }
 
 export class ApiStack extends NestedStack {
@@ -95,39 +91,7 @@ export class ApiStack extends NestedStack {
     const postIdResource = postsResource.addResource("{post_id}")
     const allPostsResource = this.restApi.root.addResource("posts");
 
-    postsResource.addMethod(
-      HttpMethod.POST,
-      new LambdaIntegration(
-        props.createPostFunction,
-        commonLambdaIntegrationOptions
-      ),
-      commonAuthorizerOptions
-    );
-
-    postIdResource.addMethod(
-      HttpMethod.DELETE,
-      new LambdaIntegration(
-        props.deletePostFunction,
-        commonLambdaIntegrationOptions
-      ),
-      commonAuthorizerOptions
-    );
-
-    postIdResource.addMethod(
-      HttpMethod.GET,
-      new LambdaIntegration(
-        props.getPostFunction,
-        commonLambdaIntegrationOptions
-      )
-    );
-
-    allPostsResource.addMethod(
-      HttpMethod.GET,
-      new LambdaIntegration(
-        props.getAllPostsFunction,
-        commonLambdaIntegrationOptions
-      )
-    );
+    usersResource.addMethod(HttpMethod.GET);
 
     const deployment = new Deployment(
       this, 

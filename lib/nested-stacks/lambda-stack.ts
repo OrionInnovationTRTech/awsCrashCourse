@@ -29,10 +29,6 @@ export class LambdaStack extends NestedStack {
   private readonly authorizer: IFunction;
   private readonly props: LambdaStackProps;
   private readonly login: IFunction;
-  private readonly createPost: IFunction;
-  private readonly deletePost: IFunction;
-  private readonly getAllPosts: IFunction;
-  private readonly getPost: IFunction;
 
   public getLinkToPrivateKey() {
     return this.linkToPrivateKey;
@@ -50,21 +46,7 @@ export class LambdaStack extends NestedStack {
     return this.login;
   }
 
-  public getCreatePost() {
-    return this.createPost;
-  }
 
-  public getDeletePost() {
-    return this.deletePost;
-  }
-
-  public getGetAllPosts() {
-    return this.getAllPosts;
-  }
-
-  public getGetPost() {
-    return this.getPost;
-  }
 
   private generateCommonLambdaProps(lambdaFunctionName: string, lambdaNeedsToConnectToRds: boolean = false): NodejsFunctionProps {
     const {
@@ -171,49 +153,5 @@ export class LambdaStack extends NestedStack {
     props.dbCluster.grantDataApiAccess(this.login);
     this.login.addToRolePolicy(props.dbSecretAccessPolicy);
 
-
-    this.createPost = new NodejsFunction(this, "create-post", {
-      ...this.generateCommonLambdaProps("create-post", true),
-      environment: {
-        NODE_OPTIONS: "--enable-source-maps",
-        DB_SECRET_ID: props.dbSecretName
-      }
-    });
-
-    props.dbCluster.grantDataApiAccess(this.createPost);
-    this.createPost.addToRolePolicy(props.dbSecretAccessPolicy);
-    
-    this.deletePost = new NodejsFunction(this, "delete-post", {
-      ...this.generateCommonLambdaProps("delete-post", true),
-      environment: {
-        NODE_OPTIONS: "--enable-source-maps",
-        DB_SECRET_ID: props.dbSecretName
-      }
-    });
-
-    props.dbCluster.grantDataApiAccess(this.deletePost);
-    this.deletePost.addToRolePolicy(props.dbSecretAccessPolicy);
-    
-    this.getAllPosts = new NodejsFunction(this, "get-all-posts", {
-      ...this.generateCommonLambdaProps("get-all-posts", true),
-      environment: {
-        NODE_OPTIONS: "--enable-source-maps",
-        DB_SECRET_ID: props.dbSecretName
-      }
-    });
-
-    props.dbCluster.grantDataApiAccess(this.getAllPosts);
-    this.getAllPosts.addToRolePolicy(props.dbSecretAccessPolicy);
-    
-    this.getPost = new NodejsFunction(this, "get-post", {
-      ...this.generateCommonLambdaProps("get-post", true),
-      environment: {
-        NODE_OPTIONS: "--enable-source-maps",
-        DB_SECRET_ID: props.dbSecretName
-      }
-    });
-
-    props.dbCluster.grantDataApiAccess(this.getPost);
-    this.getPost.addToRolePolicy(props.dbSecretAccessPolicy);
   }
 }
