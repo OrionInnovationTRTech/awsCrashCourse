@@ -6,20 +6,14 @@ import { Ec2Stack } from './nested-stacks/ec2-stack';
 import { LambdaStack } from './nested-stacks/lambda-stack';
 import { NetworkStack } from './nested-stacks/network-stack';
 import { S3Stack } from './nested-stacks/s3-stack';
-import path from "path";
-import dotenv from "dotenv";
 import { ApiStack } from './nested-stacks/api-stack';
 import { IamStack } from './nested-stacks/iam-stack';
-
-dotenv.config({
-  path: path.resolve(__dirname, "../.env")
-})
 
 export class MainStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const envName = process.env.CDK_ENVIRONMENT_NAME!;
+    const envName = process.env.ENVIRONMENT_NAME!;
     const appName = process.env.CDK_APP_NAME!;
 
     const networkStack = new NetworkStack(this, "network-stack", {

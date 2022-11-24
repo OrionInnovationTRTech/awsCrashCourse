@@ -1,0 +1,91 @@
+image: oriontrtechclub/cdk-pipeline-execution-image:latest
+
+stages:
+  - test
+  - build
+  - deploy
+
+test:
+  stage: test
+  when: always
+  script:
+    - npm i
+    - npm run test
+  artifacts:
+    paths:
+      - node_modules
+      - package-lock.json
+
+.common-script: &ptr-common-script
+    - cat $json_variables | jq --arg env "$ENVIRONMENT_NAME" -r '.[$env] | to_entries | .[] | "export \(.key)=\(.value)"' > env_vars.sh
+    - source env_vars.sh
+    - unset AWS_SESSION_TOKEN
+    - credentials=$(aws sts assume-role --role-arn "$PIPELINE_EXECUTION_USER_ROLE_ARN"
+                                        --role-session-name "$ENVIRONMENT_NAME-deployment"
+                                        --query '[Credentials.AccessKeyId,Credentials.SecretAccessKey,Credentials.SessionToken]'
+                                        --output text)
+    - export AWS_ACCESS_KEY_ID=$(echo "$credentials" | awk '{ print $1 }')
+    - export AWS_SECRET_ACCESS_KEY=$(echo "$credentials" | awk '{ print $2 }')
+    - export AWS_SESSION_TOKEN=$(echo "$credentials" | awk '{ print $3 }')
+
+build-dev:
+  stage: build
+  when: on_success
+  except:
+    - /^release/
+  script:
+    - export ENVIRONMENT_NAME=dev
+    - *ptr-common-script
+    - cdk bootstrap
+    - cdk synth
+  dependencies:
+    - test
+  artifacts:
+    paths:
+      - cdk.out
+  environment: dev
+
+deploy-dev:
+  stage: deploy
+  when: on_success
+  only:
+    - dev
+  script:
+    - export ENVIRONMENT_NAME=dev
+    - *ptr-common-script
+    - cdk deploy
+  dependencies:
+    - test
+    - build-dev
+  environment: dev
+
+build-prod:
+  stage: build
+  when: on_success
+  only:
+    - /^release/
+  script:
+    - export ENVIRONMENT_NAME=prod
+    - *ptr-common-script
+    - cdk bootstrap
+    - cdk synth
+  dependencies:
+    - test
+  artifacts:
+    paths:
+      - cdk.out
+  environment: prod
+
+deploy-prod:
+  stage: deploy
+  when: manual
+  only:
+    - /^release/
+  script:
+    - export ENVIRONMENT_NAME=prod
+    - *ptr-common-script
+    - cdk deploy
+  dependencies:
+    - test
+    - build-prod
+  environment: prod
