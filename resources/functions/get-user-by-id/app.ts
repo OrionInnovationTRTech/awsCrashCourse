@@ -1,11 +1,12 @@
+import "reflect-metadata";
 import middy from "@middy/core";
 import httpErrorHandler from "@middy/http-error-handler";
 import { APIGatewayProxyEvent, APIGatewayProxyStructuredResultV2 } from "aws-lambda";
-import { Knex } from "knex";
+import * as yup from "yup";
 import container from "../../config/inversify.config";
 import { TYPES } from "../../config/types";
 import validator from "../../middlewares/validator";
-import * as yup from "yup";
+import IUserRepository from "../../repository/IUserRepository";
 import ResponseUtils from "../../utils/ResponseUtils";
 
 interface GetUserByIdEvent extends APIGatewayProxyEvent {
@@ -32,12 +33,9 @@ const handler = async (event: GetUserByIdEvent): Promise<APIGatewayProxyStructur
     }
   } = event;
 
-  const connection = await container.getAsync<Knex>(TYPES.Knex);
+  const userRepository = await container.getAsync<IUserRepository>(TYPES.UserRepository);
 
-  const user = await connection.select("*")
-    .from("users")
-    .where({ id: user_id })
-    .first();
+  const user = await userRepository.getUserById(user_id);
 
   if (!user) {
     return responseUtils.notFound();
